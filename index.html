@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TalentAI PLN — HR Development & Assessment</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  body { font-family: 'Inter', system-ui, sans-serif; background: #f7f9fc; }
+  .pln-blue { background: #003d7a; }
+  .pln-yellow { color: #fcb017; }
+  .pln-yellow-bg { background: #fcb017; }
+  .card { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; }
+  .tab-active { border-bottom: 3px solid #fcb017; color: #003d7a; font-weight: 600; }
+  .score-bar { height: 6px; border-radius: 3px; background: #e5e7eb; overflow: hidden; }
+  .score-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+  .badge { padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .badge-ready { background: #d1fae5; color: #065f46; }
+  .badge-dev { background: #fef3c7; color: #92400e; }
+  .badge-watch { background: #fee2e2; color: #991b1b; }
+  .badge-star { background: #dbeafe; color: #1e40af; }
+  .modal-bg { background: rgba(0,0,0,0.5); }
+  .glow { box-shadow: 0 0 0 3px rgba(252, 176, 23, 0.3); }
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="pln-blue text-white">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="pln-yellow-bg w-10 h-10 rounded-lg flex items-center justify-center text-blue-900 font-black text-xl">T</div>
+      <div>
+        <div class="font-bold text-lg leading-tight">TalentAI<span class="pln-yellow">.PLN</span></div>
+        <div class="text-xs text-blue-200">HR Development & Assessment Platform</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="text-right text-xs">
+        <div class="text-blue-200">Logged in as</div>
+        <div class="font-semibold">Manajer SDM • UID Jabar</div>
+      </div>
+      <div class="w-10 h-10 rounded-full bg-blue-700 flex items-center justify-center font-bold">QH</div>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto px-6 flex gap-6 text-sm">
+    <button onclick="switchTab('dashboard')" id="tab-dashboard" class="py-3 tab-active">Dashboard</button>
+    <button onclick="switchTab('talent')" id="tab-talent" class="py-3 text-blue-200 hover:text-white">Talent Pool</button>
+    <button onclick="switchTab('assessment')" id="tab-assessment" class="py-3 text-blue-200 hover:text-white">AI Assessment</button>
+    <button onclick="switchTab('fitproper')" id="tab-fitproper" class="py-3 text-blue-200 hover:text-white">Fit & Proper</button>
+    <button onclick="switchTab('methodology')" id="tab-methodology" class="py-3 text-blue-200 hover:text-white">AI Methodology</button>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-6">
+
+<!-- ============ DASHBOARD ============ -->
+<section id="view-dashboard">
+  <div class="grid grid-cols-4 gap-4 mb-6">
+    <div class="card p-5">
+      <div class="text-xs text-gray-500 font-medium">TOTAL KARYAWAN</div>
+      <div class="text-3xl font-bold mt-1">2,847</div>
+      <div class="text-xs text-gray-500 mt-1">UID Jabar</div>
+    </div>
+    <div class="card p-5">
+      <div class="text-xs text-gray-500 font-medium">READY FOR PROMOTION</div>
+      <div class="text-3xl font-bold mt-1 text-green-600">127</div>
+      <div class="text-xs text-gray-500 mt-1">AI Score ≥ 80</div>
+    </div>
+    <div class="card p-5">
+      <div class="text-xs text-gray-500 font-medium">IN DEVELOPMENT</div>
+      <div class="text-3xl font-bold mt-1 text-amber-600">412</div>
+      <div class="text-xs text-gray-500 mt-1">Need targeted training</div>
+    </div>
+    <div class="card p-5">
+      <div class="text-xs text-gray-500 font-medium">HIGH POTENTIAL (HiPo)</div>
+      <div class="text-3xl font-bold mt-1 text-blue-600">68</div>
+      <div class="text-xs text-gray-500 mt-1">Top 2.4% talent</div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-4 mb-6">
+    <div class="card p-5 col-span-2">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-bold">9-Box Talent Grid</h3>
+        <span class="text-xs text-gray-500">Performance × Potential</span>
+      </div>
+      <div class="grid grid-cols-3 gap-2 text-xs">
+        <div class="aspect-square bg-yellow-50 border border-yellow-200 rounded p-2 flex flex-col justify-between">
+          <div class="font-semibold text-yellow-800">Enigma</div>
+          <div class="text-2xl font-bold text-yellow-700">34</div>
+        </div>
+        <div class="aspect-square bg-green-50 border border-green-200 rounded p-2 flex flex-col justify-between">
+          <div class="font-semibold text-green-800">High Potential</div>
+          <div class="text-2xl font-bold text-green-700">68</div>
+        </div>
+        <div class="aspect-square bg-green-100 border border-green-300 rounded p-2 flex flex-col justify-between">
+          <div class="font-semibold text-green-900">Star</div>
+          <div class="text-2xl font-bold text-green-800">42</div>
+        </div>
+        <div class="aspect-square bg-gray-50 border border-gray-200 rounded p-2 flex flex-col justify-between">
+          <div class="font-semibold text-gray-700">Question Mark</div>
+          <div class="text-2xl font-bold text-gray-600">156</div>
+        </div>
+        <div class="aspect-square bg-blue-50 border border-blue-200 rounded p-2 flex flex-col justify-between">
+          <div class="font-semibold text-blue-800">Core Player</div>
+          <div class="text-2xl font-bold text-blue-700">892</div>
+        </div>
+        <div class="aspect-square bg-blue-100 border border-blue-300 rounded p-2 flex flex-col justify-between">
+          <div class="font-semibold text-blue-900">High Performer</div>
+          <div class="text-2xl font-bold text-blue-800">324</div>
+        </div>
+        <div class="aspect-square bg-red-50 border border-red-200 rounded p-2 flex flex-col justify-between">
+          <div class="font-semibold text-red-800">Iceberg</div>
+          <div class="text-2xl font-bold text-red-700">187</div>
+        </div>
+        <div class="aspect-square bg-gray-100 border border-gray-300 rounded p-2 flex flex-col justify-between">
+          <div class="font-semibold text-gray-800">Effective</div>
+          <div class="text-2xl font-bold text-gray-700">678</div>
+        </div>
+        <div class="aspect-square bg-amber-50 border border-amber-200 rounded p-2 flex flex-col justify-between">
+          <div class="font-semibold text-amber-800">Solid</div>
+          <div class="text-2xl font-bold text-amber-700">466</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-5">
+      <h3 class="font-bold mb-4">Distribusi AI Score</h3>
+      <canvas id="distChart" height="200"></canvas>
+    </div>
+  </div>
+
+  <div class="card p-5">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-bold">🏆 Top 10 Talent — Promotion Ready</h3>
+      <button onclick="switchTab('talent')" class="text-sm text-blue-700 hover:underline">Lihat semua →</button>
+    </div>
+    <table class="w-full text-sm">
+      <thead class="text-xs text-gray-500 border-b">
+        <tr><th class="text-left py-2">Nama</th><th class="text-left">Posisi Saat Ini</th><th class="text-left">Unit</th><th class="text-left">Target Promosi</th><th class="text-right">AI Score</th><th class="text-center">Status</th></tr>
+      </thead>
+      <tbody id="topTalentBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ TALENT POOL ============ -->
+<section id="view-talent" class="hidden">
+  <div class="card p-5 mb-4">
+    <div class="flex gap-3 items-center">
+      <input type="text" id="searchInput" oninput="renderTalent()" placeholder="🔍 Cari nama atau NIP..." class="flex-1 px-3 py-2 border rounded-lg text-sm">
+      <select id="filterUnit" onchange="renderTalent()" class="px-3 py-2 border rounded-lg text-sm">
+        <option value="">Semua Unit</option>
+        <option>UP3 Indramayu</option><option>UP3 Bandung</option><option>UP3 Cirebon</option><option>UP3 Bekasi</option>
+      </select>
+      <select id="filterStatus" onchange="renderTalent()" class="px-3 py-2 border rounded-lg text-sm">
+        <option value="">Semua Status</option>
+        <option>Ready</option><option>Development</option><option>Watch</option><option>Star</option>
+      </select>
+      <button class="pln-blue text-white px-4 py-2 rounded-lg text-sm font-medium">+ Run AI Scoring</button>
+    </div>
+  </div>
+
+  <div class="card overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-gray-50 text-xs text-gray-600 border-b">
+        <tr>
+          <th class="text-left py-3 px-4">Karyawan</th>
+          <th class="text-left">Posisi / Unit</th>
+          <th class="text-left">Grade</th>
+          <th class="text-left">Masa Kerja</th>
+          <th class="text-left">Performance</th>
+          <th class="text-left">Competency</th>
+          <th class="text-left">Leadership</th>
+          <th class="text-right pr-4">AI Score</th>
+          <th class="text-center">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="talentTableBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ ASSESSMENT ============ -->
+<section id="view-assessment" class="hidden">
+  <div class="card p-6 mb-4">
+    <h2 class="text-xl font-bold mb-2">AI Competency Assessment Engine</h2>
+    <p class="text-sm text-gray-600 mb-4">Sistem mengevaluasi karyawan berdasarkan 6 dimensi utama menggunakan kombinasi data historis HRIS, hasil tes psikometri, peer review 360°, dan KPI operasional.</p>
+    
+    <div class="grid grid-cols-3 gap-4">
+      <div class="border-l-4 border-blue-500 bg-blue-50 p-4 rounded">
+        <div class="font-bold text-blue-900">1. Technical Competency</div>
+        <div class="text-xs text-blue-700 mt-1">Sertifikasi K3, kompetensi teknis distribusi, pemahaman regulasi</div>
+        <div class="text-xs mt-2 text-gray-600">Bobot: <b>20%</b></div>
+      </div>
+      <div class="border-l-4 border-green-500 bg-green-50 p-4 rounded">
+        <div class="font-bold text-green-900">2. Performance KPI</div>
+        <div class="text-xs text-green-700 mt-1">SAIDI/SAIFI unit, NKO score, achievement target 4DX</div>
+        <div class="text-xs mt-2 text-gray-600">Bobot: <b>25%</b></div>
+      </div>
+      <div class="border-l-4 border-purple-500 bg-purple-50 p-4 rounded">
+        <div class="font-bold text-purple-900">3. Leadership</div>
+        <div class="text-xs text-purple-700 mt-1">Span of control, mentoring score, project leadership</div>
+        <div class="text-xs mt-2 text-gray-600">Bobot: <b>20%</b></div>
+      </div>
+      <div class="border-l-4 border-amber-500 bg-amber-50 p-4 rounded">
+        <div class="font-bold text-amber-900">4. Behavioral (AKHLAK)</div>
+        <div class="text-xs text-amber-700 mt-1">Amanah, Kompeten, Harmonis, Loyal, Adaptif, Kolaboratif</div>
+        <div class="text-xs mt-2 text-gray-600">Bobot: <b>15%</b></div>
+      </div>
+      <div class="border-l-4 border-red-500 bg-red-50 p-4 rounded">
+        <div class="font-bold text-red-900">5. Integrity & Compliance</div>
+        <div class="text-xs text-red-700 mt-1">Track record disiplin, audit GCG, whistleblower clearance</div>
+        <div class="text-xs mt-2 text-gray-600">Bobot: <b>10%</b></div>
+      </div>
+      <div class="border-l-4 border-cyan-500 bg-cyan-50 p-4 rounded">
+        <div class="font-bold text-cyan-900">6. Innovation & Learning</div>
+        <div class="text-xs text-cyan-700 mt-1">Kontribusi inovasi PLN IG, sertifikasi baru, lifelong learning</div>
+        <div class="text-xs mt-2 text-gray-600">Bobot: <b>10%</b></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card p-6">
+    <h3 class="font-bold mb-4">📋 Live Demo: Jalankan Assessment Karyawan</h3>
+    <div class="grid grid-cols-2 gap-6">
+      <div>
+        <label class="text-xs font-semibold text-gray-600">Pilih Karyawan</label>
+        <select id="assessSelect" onchange="runAssessment()" class="w-full mt-1 px-3 py-2 border rounded-lg text-sm"></select>
+        
+        <div id="assessResult" class="mt-4 hidden">
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <div class="text-xs text-gray-500">AI OVERALL SCORE</div>
+            <div class="flex items-end gap-2 mt-1">
+              <span id="assessScore" class="text-5xl font-bold pln-yellow">0</span>
+              <span class="text-gray-500 mb-2">/ 100</span>
+            </div>
+            <div id="assessVerdict" class="mt-2 text-sm font-semibold"></div>
+          </div>
+          
+          <div class="mt-4 space-y-2" id="assessBreakdown"></div>
+          
+          <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+            <div class="text-xs font-bold text-blue-900 mb-1">🤖 AI RECOMMENDATION</div>
+            <div id="assessRecommendation" class="text-xs text-blue-800"></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <canvas id="radarChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FIT & PROPER ============ -->
+<section id="view-fitproper" class="hidden">
+  <div class="card p-6 mb-4">
+    <div class="flex justify-between items-start">
+      <div>
+        <h2 class="text-xl font-bold">Fit & Proper Test Module</h2>
+        <p class="text-sm text-gray-600 mt-1">Evaluasi kandidat untuk jabatan struktural dengan AI-assisted scoring</p>
+      </div>
+      <button class="pln-blue text-white px-4 py-2 rounded-lg text-sm">+ Buat Sesi Baru</button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-4 mb-4">
+    <div class="card p-4">
+      <div class="text-xs text-gray-500">SESI AKTIF</div>
+      <div class="text-2xl font-bold mt-1">7</div>
+      <div class="text-xs text-gray-500">Manajer ULP &amp; AsMan</div>
+    </div>
+    <div class="card p-4">
+      <div class="text-xs text-gray-500">KANDIDAT DALAM PROSES</div>
+      <div class="text-2xl font-bold mt-1">42</div>
+    </div>
+    <div class="card p-4">
+      <div class="text-xs text-gray-500">PASS RATE BULAN INI</div>
+      <div class="text-2xl font-bold mt-1 text-green-600">73%</div>
+    </div>
+  </div>
+
+  <div class="card p-5">
+    <h3 class="font-bold mb-4">Sesi Aktif: Manajer ULP — UP3 Indramayu</h3>
+    <div class="space-y-3" id="fitProperList"></div>
+  </div>
+
+  <div class="card p-5 mt-4">
+    <h3 class="font-bold mb-3">⚖️ Tahapan Fit & Proper Test</h3>
+    <div class="grid grid-cols-5 gap-2 text-xs">
+      <div class="border-2 border-green-500 bg-green-50 p-3 rounded text-center">
+        <div class="font-bold text-green-800">1. Screening</div>
+        <div class="text-green-700 mt-1">Verifikasi data HRIS &amp; AI score baseline</div>
+      </div>
+      <div class="border-2 border-green-500 bg-green-50 p-3 rounded text-center">
+        <div class="font-bold text-green-800">2. Psikometri</div>
+        <div class="text-green-700 mt-1">Tes online + AI behavioral analysis</div>
+      </div>
+      <div class="border-2 border-amber-500 bg-amber-50 p-3 rounded text-center">
+        <div class="font-bold text-amber-800">3. Case Study</div>
+        <div class="text-amber-700 mt-1">Simulasi kasus operasional unit</div>
+      </div>
+      <div class="border-2 border-gray-300 p-3 rounded text-center">
+        <div class="font-bold text-gray-700">4. Panel Interview</div>
+        <div class="text-gray-600 mt-1">Wawancara dengan AI sentiment scoring</div>
+      </div>
+      <div class="border-2 border-gray-300 p-3 rounded text-center">
+        <div class="font-bold text-gray-700">5. Final Decision</div>
+        <div class="text-gray-600 mt-1">Komite SDM + AI recommendation</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ METHODOLOGY ============ -->
+<section id="view-methodology" class="hidden">
+  <div class="card p-6 mb-4">
+    <h2 class="text-xl font-bold mb-2">🤖 AI Methodology & Explainability</h2>
+    <p class="text-sm text-gray-600">Transparansi adalah kunci. Setiap keputusan AI di TalentAI bisa dijelaskan dan diaudit.</p>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div class="card p-5">
+      <h3 class="font-bold mb-3">📊 Model Stack</h3>
+      <div class="space-y-3 text-sm">
+        <div class="flex gap-3">
+          <div class="w-8 h-8 rounded bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">1</div>
+          <div>
+            <div class="font-semibold">Gradient Boosting (LightGBM/CatBoost)</div>
+            <div class="text-xs text-gray-600">Untuk prediksi readiness score dari fitur tabular HRIS</div>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <div class="w-8 h-8 rounded bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">2</div>
+          <div>
+            <div class="font-semibold">NLP Sentiment (IndoBERT)</div>
+            <div class="text-xs text-gray-600">Analisis kualitatif dari 360° feedback &amp; interview transcript</div>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <div class="w-8 h-8 rounded bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">3</div>
+          <div>
+            <div class="font-semibold">Clustering (K-Means)</div>
+            <div class="text-xs text-gray-600">Segmentasi 9-box talent grid otomatis</div>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <div class="w-8 h-8 rounded bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">4</div>
+          <div>
+            <div class="font-semibold">SHAP Explainer</div>
+            <div class="text-xs text-gray-600">Setiap skor punya breakdown faktor yang bisa dijelaskan</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-5">
+      <h3 class="font-bold mb-3">🛡️ Bias Mitigation</h3>
+      <div class="space-y-2 text-sm">
+        <div class="flex gap-2"><span>✓</span><div><b>Gender-blind scoring</b> — fitur gender tidak masuk model</div></div>
+        <div class="flex gap-2"><span>✓</span><div><b>Unit normalization</b> — skor disesuaikan dengan baseline unit</div></div>
+        <div class="flex gap-2"><span>✓</span><div><b>Tenure decay</b> — masa kerja tidak overweight</div></div>
+        <div class="flex gap-2"><span>✓</span><div><b>Audit trail</b> — semua keputusan AI tersimpan untuk review</div></div>
+        <div class="flex gap-2"><span>✓</span><div><b>Human-in-the-loop</b> — AI memberi rekomendasi, keputusan final tetap manusia</div></div>
+      </div>
+    </div>
+
+    <div class="card p-5 col-span-2">
+      <h3 class="font-bold mb-3">🔄 Data Flow</h3>
+      <div class="flex items-center justify-between text-xs">
+        <div class="flex-1 text-center">
+          <div class="bg-gray-100 p-3 rounded font-semibold">SIMKP / HRIS</div>
+          <div class="text-gray-500 mt-1">Data master, tenure, grade</div>
+        </div>
+        <div class="text-2xl text-gray-400">→</div>
+        <div class="flex-1 text-center">
+          <div class="bg-gray-100 p-3 rounded font-semibold">NKO + 4DX</div>
+          <div class="text-gray-500 mt-1">KPI &amp; performance</div>
+        </div>
+        <div class="text-2xl text-gray-400">→</div>
+        <div class="flex-1 text-center">
+          <div class="pln-blue text-white p-3 rounded font-semibold">AI Engine</div>
+          <div class="text-gray-500 mt-1">Scoring &amp; explainer</div>
+        </div>
+        <div class="text-2xl text-gray-400">→</div>
+        <div class="flex-1 text-center">
+          <div class="pln-yellow-bg text-blue-900 p-3 rounded font-semibold">TalentAI Dashboard</div>
+          <div class="text-gray-500 mt-1">Insight untuk SDM</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- Modal Detail Karyawan -->
+<div id="detailModal" class="hidden fixed inset-0 modal-bg z-50 flex items-center justify-center p-4" onclick="if(event.target===this)closeModal()">
+  <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+    <div class="pln-blue text-white p-5 rounded-t-2xl flex justify-between items-start">
+      <div id="modalHeader"></div>
+      <button onclick="closeModal()" class="text-2xl">×</button>
+    </div>
+    <div id="modalBody" class="p-6"></div>
+  </div>
+</div>
+
+<script>
+// ============ MOCK DATA ============
+const employees = [
+  { nip: '8901234A', name: 'Ahmad Fauzi Rahman', pos: 'Supervisor Teknik', unit: 'UP3 Indramayu', grade: 'D2', tenure: 12, perf: 92, comp: 88, lead: 85, akhlak: 90, integ: 95, innov: 88, target: 'Manajer ULP', status: 'Ready' },
+  { nip: '9203456B', name: 'Siti Nurhaliza', pos: 'Asisten Manajer', unit: 'UP3 Bandung', grade: 'D3', tenure: 15, perf: 95, comp: 92, lead: 90, akhlak: 94, integ: 92, innov: 91, target: 'Manajer Bagian', status: 'Star' },
+  { nip: '8705678C', name: 'Budi Santoso', pos: 'Engineer Distribusi', unit: 'UP3 Cirebon', grade: 'D1', tenure: 8, perf: 78, comp: 82, lead: 70, akhlak: 85, integ: 88, innov: 80, target: 'Supervisor', status: 'Development' },
+  { nip: '9108901D', name: 'Dewi Lestari', pos: 'Analis Niaga', unit: 'UP3 Bekasi', grade: 'D2', tenure: 10, perf: 88, comp: 85, lead: 82, akhlak: 92, integ: 90, innov: 87, target: 'Supervisor Niaga', status: 'Ready' },
+  { nip: '8612345E', name: 'Eko Prasetyo', pos: 'Manajer Bagian', unit: 'UP3 Indramayu', grade: 'D3', tenure: 18, perf: 94, comp: 90, lead: 93, akhlak: 91, integ: 95, innov: 85, target: 'Manajer UP3', status: 'Star' },
+  { nip: '9354678F', name: 'Fitriani Handayani', pos: 'Engineer Pelayanan', unit: 'UP3 Bandung', grade: 'D1', tenure: 6, perf: 72, comp: 75, lead: 65, akhlak: 80, integ: 85, innov: 78, target: 'Asisten Engineer Sr', status: 'Development' },
+  { nip: '8807890G', name: 'Gunawan Wijaya', pos: 'Supervisor K3', unit: 'UP3 Cirebon', grade: 'D2', tenure: 14, perf: 86, comp: 88, lead: 80, akhlak: 88, integ: 92, innov: 75, target: 'Asisten Manajer K3', status: 'Ready' },
+  { nip: '9012345H', name: 'Hesti Purwanti', pos: 'Analis SDM', unit: 'UP3 Bekasi', grade: 'D2', tenure: 11, perf: 85, comp: 84, lead: 78, akhlak: 90, integ: 91, innov: 82, target: 'Supervisor SDM', status: 'Ready' },
+  { nip: '8523456I', name: 'Indra Kusuma', pos: 'Manajer ULP', unit: 'UP3 Indramayu', grade: 'D3', tenure: 20, perf: 91, comp: 89, lead: 92, akhlak: 87, integ: 88, innov: 80, target: 'Manajer Bagian Distribusi', status: 'Ready' },
+  { nip: '9434567J', name: 'Joko Susilo', pos: 'Engineer Operasi', unit: 'UP3 Bandung', grade: 'D1', tenure: 5, perf: 68, comp: 70, lead: 60, akhlak: 75, integ: 82, innov: 72, target: '—', status: 'Watch' },
+  { nip: '8716789K', name: 'Kartika Sari', pos: 'Asisten Manajer Niaga', unit: 'UP3 Cirebon', grade: 'D3', tenure: 16, perf: 93, comp: 91, lead: 88, akhlak: 93, integ: 94, innov: 89, target: 'Manajer ULP', status: 'Star' },
+  { nip: '8989012L', name: 'Lukman Hakim', pos: 'Supervisor Distribusi', unit: 'UP3 Bekasi', grade: 'D2', tenure: 13, perf: 87, comp: 86, lead: 84, akhlak: 89, integ: 90, innov: 83, target: 'Asisten Manajer', status: 'Ready' },
+];
+
+function calcScore(e) {
+  return Math.round(e.perf*0.25 + e.comp*0.20 + e.lead*0.20 + e.akhlak*0.15 + e.integ*0.10 + e.innov*0.10);
+}
+
+function statusBadge(s) {
+  const map = { 'Ready': 'badge-ready', 'Star': 'badge-star', 'Development': 'badge-dev', 'Watch': 'badge-watch' };
+  return `<span class="badge ${map[s]}">${s}</span>`;
+}
+
+function scoreBar(val, color='#003d7a') {
+  return `<div class="score-bar w-20"><div class="score-fill" style="width:${val}%;background:${color}"></div></div>`;
+}
+
+// ============ DASHBOARD ============
+function renderTopTalent() {
+  const sorted = [...employees].sort((a,b)=>calcScore(b)-calcScore(a)).slice(0,10);
+  document.getElementById('topTalentBody').innerHTML = sorted.map(e => `
+    <tr class="border-b hover:bg-gray-50 cursor-pointer" onclick="openDetail('${e.nip}')">
+      <td class="py-3"><div class="font-semibold">${e.name}</div><div class="text-xs text-gray-500">${e.nip}</div></td>
+      <td>${e.pos}</td>
+      <td class="text-gray-600">${e.unit}</td>
+      <td class="text-blue-700 font-medium">${e.target}</td>
+      <td class="text-right font-bold pln-yellow text-lg">${calcScore(e)}</td>
+      <td class="text-center">${statusBadge(e.status)}</td>
+    </tr>
+  `).join('');
+}
+
+// ============ TALENT POOL ============
+function renderTalent() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const u = document.getElementById('filterUnit').value;
+  const s = document.getElementById('filterStatus').value;
+  const filtered = employees.filter(e => 
+    (!q || e.name.toLowerCase().includes(q) || e.nip.toLowerCase().includes(q)) &&
+    (!u || e.unit === u) &&
+    (!s || e.status === s)
+  );
+  document.getElementById('talentTableBody').innerHTML = filtered.map(e => `
+    <tr class="border-b hover:bg-gray-50">
+      <td class="py-3 px-4"><div class="font-semibold">${e.name}</div><div class="text-xs text-gray-500">NIP ${e.nip}</div></td>
+      <td><div>${e.pos}</div><div class="text-xs text-gray-500">${e.unit}</div></td>
+      <td><span class="badge bg-gray-100 text-gray-700">${e.grade}</span></td>
+      <td class="text-gray-600">${e.tenure} thn</td>
+      <td>${scoreBar(e.perf, '#10b981')}</td>
+      <td>${scoreBar(e.comp, '#3b82f6')}</td>
+      <td>${scoreBar(e.lead, '#8b5cf6')}</td>
+      <td class="text-right pr-4 font-bold pln-yellow text-lg">${calcScore(e)}</td>
+      <td class="text-center"><button onclick="openDetail('${e.nip}')" class="text-blue-700 text-xs hover:underline">Detail</button></td>
+    </tr>
+  `).join('');
+}
+
+// ============ MODAL DETAIL ============
+function openDetail(nip) {
+  const e = employees.find(x => x.nip === nip);
+  const score = calcScore(e);
+  document.getElementById('modalHeader').innerHTML = `
+    <div class="text-xs text-blue-200">NIP ${e.nip}</div>
+    <div class="text-xl font-bold">${e.name}</div>
+    <div class="text-sm text-blue-200">${e.pos} • ${e.unit}</div>
+  `;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="grid grid-cols-3 gap-4 mb-5">
+      <div class="bg-gradient-to-br from-yellow-50 to-amber-100 p-4 rounded-lg">
+        <div class="text-xs font-semibold text-amber-800">AI READINESS SCORE</div>
+        <div class="text-4xl font-bold text-amber-900 mt-1">${score}</div>
+        <div class="text-xs text-amber-700">${statusBadge(e.status)}</div>
+      </div>
+      <div class="col-span-2 bg-blue-50 p-4 rounded-lg">
+        <div class="text-xs font-semibold text-blue-800">🎯 TARGET PROMOSI AI-RECOMMENDED</div>
+        <div class="text-lg font-bold text-blue-900 mt-1">${e.target}</div>
+        <div class="text-xs text-blue-700 mt-1">Estimasi siap dalam ${score >= 85 ? '0-6 bulan' : score >= 75 ? '6-12 bulan' : '12-24 bulan'}</div>
+      </div>
+    </div>
+    
+    <h4 class="font-bold mb-2 text-sm">Breakdown 6 Dimensi</h4>
+    <div class="space-y-2 mb-5">
+      ${[
+        ['Performance KPI', e.perf, '#10b981', '25%'],
+        ['Technical Competency', e.comp, '#3b82f6', '20%'],
+        ['Leadership', e.lead, '#8b5cf6', '20%'],
+        ['Behavioral AKHLAK', e.akhlak, '#f59e0b', '15%'],
+        ['Integrity', e.integ, '#ef4444', '10%'],
+        ['Innovation', e.innov, '#06b6d4', '10%'],
+      ].map(([n,v,c,w]) => `
+        <div class="flex items-center gap-3 text-sm">
+          <div class="w-44 text-gray-700">${n} <span class="text-xs text-gray-400">(${w})</span></div>
+          <div class="flex-1 score-bar"><div class="score-fill" style="width:${v}%;background:${c}"></div></div>
+          <div class="w-10 text-right font-bold">${v}</div>
+        </div>
+      `).join('')}
+    </div>
+    
+    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-lg border-l-4 border-blue-500">
+      <div class="text-xs font-bold text-blue-900 mb-2">🤖 AI INSIGHT &amp; DEVELOPMENT PLAN</div>
+      <div class="text-xs text-gray-700 space-y-1">
+        ${score >= 85 
+          ? `<div>✅ <b>Kandidat siap promosi.</b> Rekomendasi: masukkan ke pool fit &amp; proper test berikutnya untuk posisi <b>${e.target}</b>.</div>
+             <div>📈 Strength: ${e.perf >= 90 ? 'Performance KPI sangat tinggi' : ''} ${e.lead >= 90 ? ', Leadership matang' : ''} ${e.integ >= 90 ? ', Track record integritas bersih' : ''}.</div>`
+          : score >= 75
+          ? `<div>⚠️ <b>Perlu pengembangan terarah.</b> Gap utama: ${e.lead < 80 ? 'Leadership exposure' : e.comp < 80 ? 'Sertifikasi teknis' : 'Innovation & learning'}.</div>
+             <div>📚 Rekomendasi: Program <b>${e.lead < 80 ? 'Leadership Acceleration Program' : 'Technical Mastery Track'}</b> selama 6-12 bulan.</div>`
+          : `<div>🔍 <b>Watch list.</b> Skor di bawah threshold promosi.</div>
+             <div>📋 Rekomendasi: coaching intensif, evaluasi ulang dalam 12 bulan.</div>`
+        }
+      </div>
+    </div>
+  `;
+  document.getElementById('detailModal').classList.remove('hidden');
+}
+function closeModal() { document.getElementById('detailModal').classList.add('hidden'); }
+
+// ============ ASSESSMENT ============
+let radarChartInstance = null;
+function populateAssessSelect() {
+  document.getElementById('assessSelect').innerHTML = '<option value="">-- Pilih karyawan --</option>' +
+    employees.map(e => `<option value="${e.nip}">${e.name} • ${e.pos}</option>`).join('');
+}
+function runAssessment() {
+  const nip = document.getElementById('assessSelect').value;
+  if (!nip) { document.getElementById('assessResult').classList.add('hidden'); return; }
+  const e = employees.find(x => x.nip === nip);
+  const score = calcScore(e);
+  
+  document.getElementById('assessResult').classList.remove('hidden');
+  document.getElementById('assessScore').textContent = score;
+  
+  const verdict = score >= 85 ? '🟢 RECOMMENDED FOR PROMOTION' : score >= 75 ? '🟡 NEEDS DEVELOPMENT' : '🔴 NOT READY';
+  const verdictColor = score >= 85 ? 'text-green-700' : score >= 75 ? 'text-amber-700' : 'text-red-700';
+  document.getElementById('assessVerdict').innerHTML = `<span class="${verdictColor}">${verdict}</span>`;
+  
+  document.getElementById('assessBreakdown').innerHTML = [
+    ['Performance', e.perf, 25],
+    ['Competency', e.comp, 20],
+    ['Leadership', e.lead, 20],
+    ['AKHLAK', e.akhlak, 15],
+    ['Integrity', e.integ, 10],
+    ['Innovation', e.innov, 10],
+  ].map(([n,v,w]) => `
+    <div class="flex justify-between text-xs">
+      <span class="text-gray-600">${n} (${w}%)</span>
+      <span class="font-semibold">${v} → kontribusi <b class="pln-yellow">${(v*w/100).toFixed(1)}</b></span>
+    </div>
+  `).join('');
+  
+  document.getElementById('assessRecommendation').textContent = score >= 85
+    ? `${e.name} layak diajukan ke fit & proper test untuk posisi ${e.target}. Estimasi readiness: 0-6 bulan.`
+    : score >= 75
+    ? `${e.name} memerlukan pengembangan pada area dengan skor terendah. Saran: enrol ke Leadership/Technical Acceleration Program 6-12 bulan.`
+    : `${e.name} masih jauh dari threshold promosi. Saran: coaching intensif & evaluasi ulang dalam 12 bulan.`;
+  
+  if (radarChartInstance) radarChartInstance.destroy();
+  radarChartInstance = new Chart(document.getElementById('radarChart'), {
+    type: 'radar',
+    data: {
+      labels: ['Performance', 'Competency', 'Leadership', 'AKHLAK', 'Integrity', 'Innovation'],
+      datasets: [{
+        label: e.name,
+        data: [e.perf, e.comp, e.lead, e.akhlak, e.integ, e.innov],
+        backgroundColor: 'rgba(252, 176, 23, 0.2)',
+        borderColor: '#fcb017',
+        borderWidth: 2,
+        pointBackgroundColor: '#003d7a',
+      }, {
+        label: 'Threshold Promosi',
+        data: [80,80,80,80,80,80],
+        backgroundColor: 'rgba(0,61,122,0.05)',
+        borderColor: '#003d7a',
+        borderDash: [5,5],
+        borderWidth: 1,
+        pointRadius: 0,
+      }]
+    },
+    options: {
+      scales: { r: { min: 0, max: 100, ticks: { stepSize: 20 } } },
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
+    }
+  });
+}
+
+// ============ FIT & PROPER ============
+function renderFitProper() {
+  const candidates = employees.filter(e => calcScore(e) >= 80).slice(0,6);
+  document.getElementById('fitProperList').innerHTML = candidates.map((e, i) => {
+    const stages = ['Screening', 'Psikometri', 'Case Study', 'Interview', 'Final'];
+    const currentStage = Math.floor(Math.random() * 4) + 1;
+    return `
+      <div class="border rounded-lg p-4">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <div class="font-semibold">${e.name}</div>
+            <div class="text-xs text-gray-500">${e.pos} • Target: ${e.target}</div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs text-gray-500">AI Score</div>
+            <div class="font-bold pln-yellow text-xl">${calcScore(e)}</div>
+          </div>
+        </div>
+        <div class="flex gap-1 mt-2">
+          ${stages.map((s, idx) => `
+            <div class="flex-1 text-center">
+              <div class="h-1.5 rounded ${idx < currentStage ? 'bg-green-500' : idx === currentStage ? 'pln-yellow-bg' : 'bg-gray-200'}"></div>
+              <div class="text-[10px] mt-1 ${idx <= currentStage ? 'text-gray-700 font-medium' : 'text-gray-400'}">${s}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ============ TABS ============
+function switchTab(name) {
+  ['dashboard','talent','assessment','fitproper','methodology'].forEach(t => {
+    document.getElementById('view-'+t).classList.add('hidden');
+    document.getElementById('tab-'+t).classList.remove('tab-active');
+    document.getElementById('tab-'+t).classList.add('text-blue-200');
+  });
+  document.getElementById('view-'+name).classList.remove('hidden');
+  document.getElementById('tab-'+name).classList.add('tab-active');
+  document.getElementById('tab-'+name).classList.remove('text-blue-200');
+}
+
+// ============ DISTRIBUTION CHART ============
+function renderDistChart() {
+  new Chart(document.getElementById('distChart'), {
+    type: 'bar',
+    data: {
+      labels: ['<60', '60-70', '70-80', '80-90', '90+'],
+      datasets: [{
+        data: [187, 466, 1570, 556, 68],
+        backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#fcb017'],
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+}
+
+// ============ INIT ============
+renderTopTalent();
+renderTalent();
+populateAssessSelect();
+renderFitProper();
+renderDistChart();
+</script>
+
+</body>
+</html>
